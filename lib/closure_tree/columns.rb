@@ -38,19 +38,19 @@ module ClosureTree
     end
 
     def quoted_hierarchy_table_name
-      connection.quote_table_name hierarchy_table_name
+      ct_class.connection.quote_table_name hierarchy_table_name
     end
 
     def quoted_parent_column_name
-      connection.quote_column_name parent_column_name
+      ct_class.connection.quote_column_name parent_column_name
     end
 
     def quoted_name_column
-      connection.quote_column_name name_column
+      ct_class.connection.quote_column_name name_column
     end
 
     def ct_quote(field)
-      connection.quote(field)
+      ct_class.connection.quote(field)
     end
 
     def order_option
@@ -106,7 +106,7 @@ module ClosureTree
     end
 
     def quoted_table_name
-      connection.quote_table_name ct_table_name
+      ct_class.connection.quote_table_name ct_table_name
     end
 
     def remove_prefix_and_suffix(table_name)

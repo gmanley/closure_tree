@@ -217,7 +217,7 @@ module ClosureTree
             FROM #{quoted_hierarchy_table_name} x
             WHERE x.descendant_id = #{ct_quote(self.ct_parent_id)}
           SQL
-          connection.execute sql.strip
+          ct_class.connection.execute sql.strip
         end
         children.each { |c| c.rebuild! }
       end
@@ -235,7 +235,7 @@ module ClosureTree
       # It shouldn't affect performance of postgresql.
       # See http://dev.mysql.com/doc/refman/5.0/en/subquery-errors.html
       # Also: PostgreSQL doesn't support INNER JOIN on DELETE, so we can't use that.
-      connection.execute <<-SQL
+      ct_class.connection.execute <<-SQL
         DELETE FROM #{quoted_hierarchy_table_name}
         WHERE descendant_id IN (
           SELECT DISTINCT descendant_id
