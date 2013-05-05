@@ -18,33 +18,37 @@ module ClosureTree
         attr_accessible :parent
       end
 
-      has_many :children, with_order_option(
+      has_many :children, *with_order_option(
         :class_name => ct_class.to_s,
         :foreign_key => parent_column_name,
         :dependent => closure_tree_options[:dependent]
       )
 
-      has_many :ancestor_hierarchies,
-        lambda {order "#{quoted_hierarchy_table_name}.generations asc"},
+      has_many :ancestor_hierarchies, *with_order_option(
         :class_name => hierarchy_class_name,
-        :foreign_key => "descendant_id"
+        :foreign_key => "descendant_id",
+        :order => "#{quoted_hierarchy_table_name}.generations asc"
+      )
 
-      has_many :self_and_ancestors,
+      has_many :self_and_ancestors, *with_order_option(
         :through => :ancestor_hierarchies,
         :source => :ancestor,
         :order => "#{quoted_hierarchy_table_name}.generations asc"
+      )
 
-      has_many :descendant_hierarchies,
+      has_many :descendant_hierarchies, *with_order_option(
         :class_name => hierarchy_class_name,
         :foreign_key => "ancestor_id",
         :order => "#{quoted_hierarchy_table_name}.generations asc"
+      )
       # TODO: FIXME: this collection currently ignores sort_order
       # (because the quoted_table_named would need to be joined in to get to the order column)
 
-      has_many :self_and_descendants,
+      has_many :self_and_descendants, *with_order_option(
         :through => :descendant_hierarchies,
         :source => :descendant,
         :order => append_order("#{quoted_hierarchy_table_name}.generations asc")
+      )
     end
 
     # Returns true if this node has no parents.

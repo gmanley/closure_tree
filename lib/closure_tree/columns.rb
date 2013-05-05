@@ -58,7 +58,15 @@ module ClosureTree
     end
 
     def with_order_option(options)
-      order_option ? options.merge(:order => order_option) : options
+      order_option = options.delete(:order) || order_option
+
+      return [options] unless order_option
+
+      if ActiveRecord::VERSION::MAJOR == 4
+        [lambda { order(order_option) }, options]
+      else
+        [options.merge(:order => order_option)]
+      end
     end
 
     def append_order(order_by)
